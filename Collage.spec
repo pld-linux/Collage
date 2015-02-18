@@ -6,7 +6,7 @@ Summary:	Cross-platform C++ network library
 Summary(pl.UTF-8):	Wieloplatformowa biblioteka sieciowa dla C++
 Name:		Collage
 Version:	1.1.2
-Release:	1
+Release:	2
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	https://github.com/Eyescale/Collage/archive/%{version}/%{name}-%{version}.tar.gz
