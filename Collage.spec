@@ -1,12 +1,12 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# do not build and package API docs
-#
+
 Summary:	Cross-platform C++ network library
 Summary(pl.UTF-8):	Wieloplatformowa biblioteka sieciowa dla C++
 Name:		Collage
 Version:	1.1.2
-Release:	4
+Release:	5
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	https://github.com/Eyescale/Collage/archive/%{version}/%{name}-%{version}.tar.gz
@@ -61,6 +61,9 @@ Pliki nagłówkowe biblioteki Collage.
 Summary:	Collage API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki Collage
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description apidocs
 API documentation for Collage library.
