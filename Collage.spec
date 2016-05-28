@@ -5,16 +5,17 @@
 Summary:	Cross-platform C++ network library
 Summary(pl.UTF-8):	Wieloplatformowa biblioteka sieciowa dla C++
 Name:		Collage
-Version:	1.1.2
-Release:	5
+Version:	1.4.0
+Release:	1
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	https://github.com/Eyescale/Collage/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	89d37ca9f592da59ddfa57ac82eb83c3
-Source1:	https://github.com/Eyescale/CMake/archive/92d0663/Eyescale-CMake-92d0663.tar.gz
-# Source1-md5:	7abca85af7f36fec7e22d7f63d601cf8
+# Source0-md5:	2a245b2739c96cd7144fe35bf0b46e8e
+Patch0:		boost-1.61.patch
 URL:		http://libcollage.net/
-BuildRequires:	Lunchbox-devel >= 1.10
+BuildRequires:	Lunchbox-devel >= 1.13.0
+BuildRequires:	Eyescale-CMake >= 2016.04
+BuildRequires:	Pression-devel
 BuildRequires:	boost-devel >= 1.41.0
 BuildRequires:	cmake >= 2.8
 %{?with_apidocs:BuildRequires:	doxygen}
@@ -72,9 +73,10 @@ API documentation for Collage library.
 Dokumentacja API biblioteki Collage.
 
 %prep
-%setup -q -a1
+%setup -q
+%patch0 -p1
 
-%{__mv} CMake-* CMake/common
+ln -s %{_datadir}/Eyescale-CMake CMake/common
 %{__rm} .gitexternals
 
 %build
@@ -104,18 +106,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS CHANGES.txt LICENSE.txt README.md doc/{README.IB,README.udt} build/doc/RelNotes.md
+%doc LICENSE.txt README.md doc/{README.IB,README.udt} doc/Changelog.md
 %attr(755,root,root) %{_bindir}/coNetperf
 %attr(755,root,root) %{_bindir}/coNodeperf
 %attr(755,root,root) %{_bindir}/coObjectperf
 %attr(755,root,root) %{_libdir}/libCollage.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libCollage.so.2
+%attr(755,root,root) %ghost %{_libdir}/libCollage.so.4
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libCollage.so
 %{_includedir}/co
-%{_pkgconfigdir}/Collage.pc
 %dir %{_datadir}/Collage
 %{_datadir}/Collage/CMake
 

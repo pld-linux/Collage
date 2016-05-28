@@ -1,0 +1,60 @@
+--- Collage-1.4.0/co/dataIStreamArchive.h~	2016-05-28 17:25:24.000000000 +0000
++++ Collage-1.4.0/co/dataIStreamArchive.h	2016-05-28 17:28:01.400951002 +0000
+@@ -42,6 +42,7 @@
+ #  include <boost/archive/shared_ptr_helper.hpp>
+ #endif
+ #include <boost/serialization/is_bitwise_serializable.hpp>
++#include <boost/serialization/array.hpp>
+ 
+ #include <boost/spirit/home/support/detail/endian.hpp>
+ #include <boost/spirit/home/support/detail/math/fpclassify.hpp>
+@@ -73,7 +72,7 @@
+ 
+     /** @internal use optimized load for arrays. */
+     template< typename T >
+-    void load_array( boost::serialization::array< T >& a, unsigned int );
++    void load_array( boost::serialization::array_wrapper< T >& a, unsigned int );
+ 
+     /** @internal enable serialization optimization for arrays. */
+     struct use_array_optimization
+--- Collage-1.4.0/co/dataIStreamArchive.ipp~	2016-03-21 10:09:25.000000000 +0000
++++ Collage-1.4.0/co/dataIStreamArchive.ipp	2016-05-28 17:28:34.587798794 +0000
+@@ -22,7 +22,7 @@
+ {
+ 
+ template< typename T >
+-void DataIStreamArchive::load_array( boost::serialization::array< T >& a,
++void DataIStreamArchive::load_array( boost::serialization::array_wrapper< T >& a,
+                                      unsigned int )
+ {
+     _stream >> Array< T >( a.address(), a.count( ));
+--- Collage-1.4.0/co/dataOStreamArchive.h~	2016-03-21 10:09:25.000000000 +0000
++++ Collage-1.4.0/co/dataOStreamArchive.h	2016-05-28 17:28:51.074554669 +0000
+@@ -49,6 +49,7 @@
+ #include <boost/type_traits/is_signed.hpp>
+ #include <boost/type_traits/is_floating_point.hpp>
+ 
++#include <boost/serialization/array.hpp>
+ 
+ namespace co
+ {
+@@ -68,7 +68,7 @@
+ 
+     /** @internal use optimized save for arrays. */
+     template< typename T >
+-    void save_array( const boost::serialization::array< T >& a, unsigned int );
++    void save_array( const boost::serialization::array_wrapper< T >& a, unsigned int );
+ 
+     /** @internal enable serialization optimization for arrays. */
+     struct use_array_optimization
+--- Collage-1.4.0/co/dataOStreamArchive.ipp~	2016-03-21 10:09:25.000000000 +0000
++++ Collage-1.4.0/co/dataOStreamArchive.ipp	2016-05-28 17:29:05.451298725 +0000
+@@ -17,7 +17,7 @@
+ 
+ 
+ template< typename T >
+-void DataOStreamArchive::save_array( const boost::serialization::array< T >& a,
++void DataOStreamArchive::save_array( const boost::serialization::array_wrapper< T >& a,
+                                      unsigned int )
+ {
+     _stream << Array< const T >( a.address(), a.count( ));
