@@ -5,12 +5,12 @@
 Summary:	Cross-platform C++ network library
 Summary(pl.UTF-8):	Wieloplatformowa biblioteka sieciowa dla C++
 Name:		Collage
-Version:	1.4.0
+Version:	1.6.0
 Release:	1
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	https://github.com/Eyescale/Collage/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	2a245b2739c96cd7144fe35bf0b46e8e
+# Source0-md5:	cf9bb83c674aa7c522878f42e4751e2e
 Patch0:		boost-1.61.patch
 URL:		http://libcollage.net/
 BuildRequires:	Lunchbox-devel >= 1.13.0
@@ -111,7 +111,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/coNodeperf
 %attr(755,root,root) %{_bindir}/coObjectperf
 %attr(755,root,root) %{_libdir}/libCollage.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libCollage.so.4
+%attr(755,root,root) %ghost %{_libdir}/libCollage.so.6
 
 %files devel
 %defattr(644,root,root,755)
