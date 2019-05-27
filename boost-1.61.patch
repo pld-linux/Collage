@@ -1,60 +1,135 @@
---- Collage-1.4.0/co/dataIStreamArchive.h~	2016-05-28 17:25:24.000000000 +0000
-+++ Collage-1.4.0/co/dataIStreamArchive.h	2016-05-28 17:28:01.400951002 +0000
-@@ -42,6 +42,7 @@
- #  include <boost/archive/shared_ptr_helper.hpp>
+--- Collage-1.7.0/co/dataIStreamArchive.h.orig	2017-05-29 15:17:51.000000000 +0200
++++ Collage-1.7.0/co/dataIStreamArchive.h	2019-05-26 22:00:38.151613651 +0200
+@@ -42,9 +42,10 @@
+ #include <boost/archive/shared_ptr_helper.hpp>
  #endif
  #include <boost/serialization/is_bitwise_serializable.hpp>
 +#include <boost/serialization/array.hpp>
  
  #include <boost/spirit/home/support/detail/endian.hpp>
- #include <boost/spirit/home/support/detail/math/fpclassify.hpp>
-@@ -73,7 +72,7 @@
+-#include <boost/spirit/home/support/detail/math/fpclassify.hpp>
++#include <boost/math/special_functions/fpclassify.hpp>
+ 
+ #include <boost/type_traits/is_floating_point.hpp>
+ #include <boost/type_traits/is_integral.hpp>
+@@ -73,7 +74,7 @@
  
      /** @internal use optimized load for arrays. */
-     template< typename T >
--    void load_array( boost::serialization::array< T >& a, unsigned int );
-+    void load_array( boost::serialization::array_wrapper< T >& a, unsigned int );
+     template <typename T>
+-    void load_array(boost::serialization::array<T>& a, unsigned int);
++    void load_array(boost::serialization::array_wrapper<T>& a, unsigned int);
  
      /** @internal enable serialization optimization for arrays. */
      struct use_array_optimization
---- Collage-1.4.0/co/dataIStreamArchive.ipp~	2016-03-21 10:09:25.000000000 +0000
-+++ Collage-1.4.0/co/dataIStreamArchive.ipp	2016-05-28 17:28:34.587798794 +0000
-@@ -22,7 +22,7 @@
- {
- 
- template< typename T >
--void DataIStreamArchive::load_array( boost::serialization::array< T >& a,
-+void DataIStreamArchive::load_array( boost::serialization::array_wrapper< T >& a,
-                                      unsigned int )
- {
-     _stream >> Array< T >( a.address(), a.count( ));
---- Collage-1.4.0/co/dataOStreamArchive.h~	2016-03-21 10:09:25.000000000 +0000
-+++ Collage-1.4.0/co/dataOStreamArchive.h	2016-05-28 17:28:51.074554669 +0000
-@@ -49,6 +49,7 @@
- #include <boost/type_traits/is_signed.hpp>
- #include <boost/type_traits/is_floating_point.hpp>
- 
-+#include <boost/serialization/array.hpp>
- 
+--- Collage-1.7.0/co/dataIStreamArchive.ipp.orig	2019-05-26 21:54:06.503735390 +0200
++++ Collage-1.7.0/co/dataIStreamArchive.ipp	2019-05-26 21:56:00.719783295 +0200
+@@ -21,7 +21,7 @@
  namespace co
  {
-@@ -68,7 +68,7 @@
+ template <typename T>
+-void DataIStreamArchive::load_array(boost::serialization::array<T>& a,
++void DataIStreamArchive::load_array(boost::serialization::array_wrapper<T>& a,
+                                     unsigned int)
+ {
+     _stream >> Array<T>(a.address(), a.count());
+@@ -73,7 +73,7 @@
+ typename boost::enable_if<boost::is_floating_point<T> >::type
+     DataIStreamArchive::load(T& t)
+ {
+-    namespace fp = boost::spirit::math;
++    namespace fp = boost::math;
+     typedef typename fp::detail::fp_traits<T>::type traits;
+ 
+     // if you end here there are three possibilities:
+--- Collage-1.7.0/co/dataOStreamArchive.h.orig	2019-05-26 21:54:06.503735390 +0200
++++ Collage-1.7.0/co/dataOStreamArchive.h	2019-05-26 21:59:39.051933822 +0200
+@@ -37,13 +37,14 @@
+ 
+ #include <boost/archive/basic_binary_oarchive.hpp>
+ #include <boost/archive/detail/register_archive.hpp>
++#include <boost/serialization/array.hpp>
+ #include <boost/serialization/is_bitwise_serializable.hpp>
+ #if BOOST_VERSION >= 104400
+ #include <boost/serialization/item_version_type.hpp>
+ #endif
+ 
+ #include <boost/spirit/home/support/detail/endian.hpp>
+-#include <boost/spirit/home/support/detail/math/fpclassify.hpp>
++#include <boost/math/special_functions/fpclassify.hpp>
+ 
+ #include <boost/type_traits/is_floating_point.hpp>
+ #include <boost/type_traits/is_integral.hpp>
+@@ -66,7 +67,7 @@
  
      /** @internal use optimized save for arrays. */
-     template< typename T >
--    void save_array( const boost::serialization::array< T >& a, unsigned int );
-+    void save_array( const boost::serialization::array_wrapper< T >& a, unsigned int );
+     template <typename T>
+-    void save_array(const boost::serialization::array<T>& a, unsigned int);
++    void save_array(const boost::serialization::array_wrapper<T>& a, unsigned int);
  
      /** @internal enable serialization optimization for arrays. */
      struct use_array_optimization
---- Collage-1.4.0/co/dataOStreamArchive.ipp~	2016-03-21 10:09:25.000000000 +0000
-+++ Collage-1.4.0/co/dataOStreamArchive.ipp	2016-05-28 17:29:05.451298725 +0000
-@@ -17,7 +17,7 @@
+--- Collage-1.7.0/co/dataOStreamArchive.ipp.orig	2019-05-26 21:54:06.507068705 +0200
++++ Collage-1.7.0/co/dataOStreamArchive.ipp	2019-05-26 22:00:05.315124875 +0200
+@@ -16,7 +16,7 @@
+  */
  
- 
- template< typename T >
--void DataOStreamArchive::save_array( const boost::serialization::array< T >& a,
-+void DataOStreamArchive::save_array( const boost::serialization::array_wrapper< T >& a,
-                                      unsigned int )
+ template <typename T>
+-void DataOStreamArchive::save_array(const boost::serialization::array<T>& a,
++void DataOStreamArchive::save_array(const boost::serialization::array_wrapper<T>& a,
+                                     unsigned int)
  {
-     _stream << Array< const T >( a.address(), a.count( ));
+     _stream << Array<const T>(a.address(), a.count());
+@@ -72,7 +72,7 @@
+ typename boost::enable_if<boost::is_floating_point<T> >::type
+     DataOStreamArchive::save(const T& t)
+ {
+-    namespace fp = boost::spirit::math;
++    namespace fp = boost::math;
+ 
+     typedef typename fp::detail::fp_traits<T>::type traits;
+ 
+--- Collage-1.7.0/co/rspConnection.cpp.orig	2017-05-29 15:17:51.000000000 +0200
++++ Collage-1.7.0/co/rspConnection.cpp	2019-05-27 05:53:38.214532320 +0200
+@@ -271,9 +271,9 @@
+         _write->set_option(ip::multicast::outbound_interface(ifAddr.to_v4()));
+ #ifdef SO_BINDTODEVICE // https://github.com/Eyescale/Collage/issues/16
+         const std::string& ifIP = ifAddr.to_string();
+-        ::setsockopt(_write->native(), SOL_SOCKET, SO_BINDTODEVICE,
++        ::setsockopt(_write->native_handle(), SOL_SOCKET, SO_BINDTODEVICE,
+                      ifIP.c_str(), ifIP.size() + 1);
+-        ::setsockopt(_read->native(), SOL_SOCKET, SO_BINDTODEVICE, ifIP.c_str(),
++        ::setsockopt(_read->native_handle(), SOL_SOCKET, SO_BINDTODEVICE, ifIP.c_str(),
+                      ifIP.size() + 1);
+ #endif
+ 
+--- Collage-1.7.0/co/dataIStreamArchive.ipp.orig	2019-05-27 05:56:32.013590769 +0200
++++ Collage-1.7.0/co/dataIStreamArchive.ipp	2019-05-27 17:49:02.531991336 +0200
+@@ -74,7 +74,7 @@
+     DataIStreamArchive::load(T& t)
+ {
+     namespace fp = boost::math;
+-    typedef typename fp::detail::fp_traits<T>::type traits;
++    typedef typename fp::detail::fp_traits<T>::sign_change_type traits; // HACK: uses boost internals
+ 
+     // if you end here there are three possibilities:
+     // 1. you're serializing a long double which is not portable
+--- Collage-1.7.0/co/dataOStreamArchive.ipp.orig	2019-05-27 17:47:03.049305296 +0200
++++ Collage-1.7.0/co/dataOStreamArchive.ipp	2019-05-27 17:51:18.467921575 +0200
+@@ -74,7 +74,7 @@
+ {
+     namespace fp = boost::math;
+ 
+-    typedef typename fp::detail::fp_traits<T>::type traits;
++    typedef typename fp::detail::fp_traits<T>::sign_change_type traits; // HACK: uses boost internals
+ 
+     // if the no_infnan flag is set we must throw here
+     if (get_flags() & serialization::no_infnan && !fp::isfinite(t))
+@@ -97,7 +97,7 @@
+         bits = 0;
+         break;
+     case FP_NAN:
+-        bits = traits::exponent | traits::mantissa;
++        bits = traits::exponent | traits::significand;
+         break;
+     case FP_INFINITE:
+         bits = traits::exponent | (t < 0) * traits::sign;

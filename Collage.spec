@@ -5,25 +5,30 @@
 Summary:	Cross-platform C++ network library
 Summary(pl.UTF-8):	Wieloplatformowa biblioteka sieciowa dla C++
 Name:		Collage
-Version:	1.6.0
+Version:	1.7.0
 Release:	1
 License:	LGPL v2.1
 Group:		Libraries
+#Source0Download: https://github.com/Eyescale/Collage/releases
 Source0:	https://github.com/Eyescale/Collage/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	cf9bb83c674aa7c522878f42e4751e2e
+# Source0-md5:	f0e57c1a2f6196c11ad8ac6029483e56
 Patch0:		boost-1.61.patch
 URL:		http://libcollage.net/
-BuildRequires:	Lunchbox-devel >= 1.13.0
-BuildRequires:	Eyescale-CMake >= 2016.04
-BuildRequires:	Pression-devel
+BuildRequires:	Lunchbox-devel >= 1.16.0
+BuildRequires:	Eyescale-CMake >= 2017.05
+BuildRequires:	Pression-devel >= 2.0.0
+BuildRequires:	Servus-devel >= 1.5.1
 BuildRequires:	boost-devel >= 1.41.0
-BuildRequires:	cmake >= 2.8
+BuildRequires:	cmake >= 3.1
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	libibverbs-devel
 BuildRequires:	librdmacm-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	pkgconfig
 BuildRequires:	udt-devel
+Requires:	Lunchbox >= 1.16.0
+Requires:	Pression >= 2.0.0
+Requires:	Servus >= 1.5.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -51,6 +56,10 @@ Summary:	Header files for Collage library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki Collage
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	Lunchbox-devel >= 1.16.0
+Requires:	Pression-devel >= 2.0.0
+Requires:	Servus-devel >= 1.5.1
+Requires:	boost-devel >= 1.41.0
 
 %description devel
 Header files for Collage library.
@@ -76,8 +85,8 @@ Dokumentacja API biblioteki Collage.
 %setup -q
 %patch0 -p1
 
+rmdir CMake/common
 ln -s %{_datadir}/Eyescale-CMake CMake/common
-%{__rm} .gitexternals
 
 %build
 install -d build
@@ -111,7 +120,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/coNodeperf
 %attr(755,root,root) %{_bindir}/coObjectperf
 %attr(755,root,root) %{_libdir}/libCollage.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libCollage.so.6
+%attr(755,root,root) %ghost %{_libdir}/libCollage.so.7
 
 %files devel
 %defattr(644,root,root,755)
