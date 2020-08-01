@@ -1,0 +1,74 @@
+--- Collage-1.7.0/co/dataIStreamArchive.ipp.orig	2020-08-01 08:04:33.045186314 +0200
++++ Collage-1.7.0/co/dataIStreamArchive.ipp	2020-08-01 08:42:36.396149673 +0200
+@@ -17,6 +17,7 @@
+ 
+ #include "dataIStream.h"
+ #include "dataStreamArchiveException.h"
++#include <boost/endian/conversion.hpp>
+ 
+ namespace co
+ {
+@@ -39,12 +40,6 @@
+ typename boost::enable_if<boost::is_integral<T> >::type
+     DataIStreamArchive::load(T& t)
+ {
+-#if BOOST_VERSION < 104800
+-    namespace bs = boost::detail;
+-#else
+-    namespace bs = boost::spirit::detail;
+-#endif
+-
+     // get the number of bytes in the stream
+     if (signed char size = _loadSignedChar())
+     {
+@@ -62,7 +57,7 @@
+ 
+         // load the value from little endian - is is then converted
+         // to the target type T and fits it because size <= sizeof(T)
+-        t = bs::load_little_endian<T, sizeof(T)>(&temp);
++        t = boost::endian::endian_load<T, sizeof(T), boost::endian::order::little>(reinterpret_cast<const unsigned char*>(&temp));
+     }
+     else
+         // zero optimization
+--- Collage-1.7.0/co/dataOStreamArchive.h.orig	2020-08-01 08:04:33.045186314 +0200
++++ Collage-1.7.0/co/dataOStreamArchive.h	2020-08-01 09:13:51.802656391 +0200
+@@ -43,7 +43,7 @@
+ #include <boost/serialization/item_version_type.hpp>
+ #endif
+ 
+-#include <boost/spirit/home/support/detail/endian.hpp>
++#include <boost/endian/conversion.hpp>
+ #include <boost/math/special_functions/fpclassify.hpp>
+ 
+ #include <boost/type_traits/is_floating_point.hpp>
+--- Collage-1.7.0/co/dataOStreamArchive.ipp.orig	2020-08-01 08:04:33.045186314 +0200
++++ Collage-1.7.0/co/dataOStreamArchive.ipp	2020-08-01 09:13:54.569308070 +0200
+@@ -15,6 +15,7 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
+ 
++
+ template <typename T>
+ void DataOStreamArchive::save_array(const boost::serialization::array_wrapper<T>& a,
+                                     unsigned int)
+@@ -34,11 +35,6 @@
+ typename boost::enable_if<boost::is_integral<T> >::type
+     DataOStreamArchive::save(const T& t)
+ {
+-#if BOOST_VERSION < 104800
+-    namespace bs = boost::detail;
+-#else
+-    namespace bs = boost::spirit::detail;
+-#endif
+ 
+     if (T temp = t)
+     {
+@@ -60,7 +56,7 @@
+ 
+         // we choose to use little endian because this way we just
+         // save the first size bytes to the stream and skip the rest
+-        bs::store_little_endian<T, sizeof(T)>(&temp, t);
++        boost::endian::endian_store<T, sizeof(T), boost::endian::order::little>(reinterpret_cast<unsigned char*>(&temp), t);
+         save_binary(&temp, size);
+     }
+     else

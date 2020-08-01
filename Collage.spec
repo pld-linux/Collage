@@ -6,13 +6,14 @@ Summary:	Cross-platform C++ network library
 Summary(pl.UTF-8):	Wieloplatformowa biblioteka sieciowa dla C++
 Name:		Collage
 Version:	1.7.0
-Release:	2
+Release:	3
 License:	LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/Eyescale/Collage/releases
 Source0:	https://github.com/Eyescale/Collage/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	f0e57c1a2f6196c11ad8ac6029483e56
 Patch0:		boost-1.61.patch
+Patch1:		%{name}-boost.patch
 URL:		http://libcollage.net/
 BuildRequires:	Lunchbox-devel >= 1.16.0
 BuildRequires:	Eyescale-CMake >= 2017.05
@@ -71,7 +72,7 @@ Pliki nagłówkowe biblioteki Collage.
 Summary:	Collage API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki Collage
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -84,6 +85,7 @@ Dokumentacja API biblioteki Collage.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 rmdir CMake/common
 ln -s %{_datadir}/Eyescale-CMake CMake/common
