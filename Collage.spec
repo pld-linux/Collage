@@ -72,9 +72,7 @@ Pliki nagłówkowe biblioteki Collage.
 Summary:	Collage API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki Collage
 Group:		Documentation
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description apidocs
 API documentation for Collage library.
