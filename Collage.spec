@@ -92,7 +92,8 @@ ln -s %{_datadir}/Eyescale-CMake CMake/common
 install -d build
 cd build
 %cmake .. \
-	-DBUILDYARD_DISABLED=ON
+	-DBUILDYARD_DISABLED=ON \
+	-DCOMMON_DISABLE_WERROR=ON
 %{__make}
 
 %if %{with apidocs}
