@@ -26,6 +26,7 @@ BuildRequires:	libibverbs-devel
 BuildRequires:	librdmacm-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	pkgconfig
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	udt-devel
 Requires:	Lunchbox >= 1.16.0
