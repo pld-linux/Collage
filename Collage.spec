@@ -14,6 +14,7 @@ Source0:	https://github.com/Eyescale/Collage/archive/%{version}/%{name}-%{versio
 # Source0-md5:	f0e57c1a2f6196c11ad8ac6029483e56
 Patch0:		boost-1.61.patch
 Patch1:		%{name}-boost.patch
+Patch2:		includes.patch
 URL:		http://libcollage.net/
 BuildRequires:	Lunchbox-devel >= 1.16.0
 BuildRequires:	Eyescale-CMake >= 2017.05
@@ -86,6 +87,7 @@ Dokumentacja API biblioteki Collage.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 rmdir CMake/common
 ln -s %{_datadir}/Eyescale-CMake CMake/common

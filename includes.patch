@@ -1,0 +1,10 @@
+--- Collage-1.7.0/co/object.h.orig	2017-05-29 15:17:51.000000000 +0200
++++ Collage-1.7.0/co/object.h	2023-07-04 11:17:43.708065664 +0200
+@@ -25,6 +25,7 @@
+ #include <co/localNode.h>  // used in RefPtr
+ #include <co/types.h>      // for Nodes
+ #include <co/version.h>    // used as default parameter
++#include <limits>
+ 
+ namespace co
+ {
