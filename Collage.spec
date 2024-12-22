@@ -15,9 +15,10 @@ Source0:	https://github.com/Eyescale/Collage/archive/%{version}/%{name}-%{versio
 Patch0:		boost-1.61.patch
 Patch1:		%{name}-boost.patch
 Patch2:		includes.patch
+Patch3:		boost-1.87.patch
 URL:		http://libcollage.net/
-BuildRequires:	Lunchbox-devel >= 1.16.0
 BuildRequires:	Eyescale-CMake >= 2017.05
+BuildRequires:	Lunchbox-devel >= 1.16.0
 BuildRequires:	Pression-devel >= 2.0.0
 BuildRequires:	Servus-devel >= 1.5.1
 BuildRequires:	boost-devel >= 1.41.0
@@ -85,9 +86,10 @@ Dokumentacja API biblioteki Collage.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
 
 rmdir CMake/common
 ln -s %{_datadir}/Eyescale-CMake CMake/common
@@ -95,6 +97,9 @@ ln -s %{_datadir}/Eyescale-CMake CMake/common
 %build
 install -d build
 cd build
+
+# boost 1.87 requires at least c++14, but something inside
+# this PoS forces -stdc=gnu++11
 %cmake .. \
 	-DBUILDYARD_DISABLED=ON \
 	-DCOMMON_DISABLE_WERROR=ON

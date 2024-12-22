@@ -1,0 +1,11 @@
+--- Collage-1.7.0/co/rspConnection.h~	2017-05-29 15:17:51.000000000 +0200
++++ Collage-1.7.0/co/rspConnection.h	2024-12-22 15:59:24.030000032 +0100
+@@ -196,7 +196,7 @@
+     typedef lunchbox::RefPtr<EventConnection> EventConnectionPtr;
+     EventConnectionPtr _event;
+ 
+-    boost::asio::io_service _ioService;
++    boost::asio::io_context _ioService;
+     boost::asio::ip::udp::socket* _read;
+     boost::asio::ip::udp::socket* _write;
+     boost::asio::ip::udp::endpoint _readAddr;
